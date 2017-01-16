@@ -53,34 +53,33 @@ class dataController extends Controller
     public function in(Request $request){
         $nama=$request->nama;
         $m=$request->masuk;
-        $masuk=str_replace(".","", $m);
+        $mas=str_replace(".","", $m);
+        $masuk=(int)$mas;
+        if ($masuk == null) {
+            Alert::error('Nominal pemasukan harus berupa angka');
+        }
         $uraian=$request->uraian;
-        if (is_integer($masuk)) {
-        	if($nama != null && $masuk != null && $uraian !=null){
-                $saldo=data::count();
-            	if ($saldo >=1){
-            		$find=data::orderby('created_at','desc')->get();
-            		$saldo=$find[0]['saldo'];
-            	}else{
-            		$saldo==$saldo;
-            	}
-            	$data=[
-            	'no_cek'=>$request->no_cek,
-            	'nama'=>$request->nama,
-            	'masuk'=>$masuk,
-            	'keluar'=>0,
-            	'uraian'=>$request->uraian,
-            	'saldo'=>$saldo+$request->masuk
-            	];
-            	$Create=data::create($data);
-                Alert::success('Data berhasil diinput');
-            	return redirect('/home');
-            }else{
-                Alert::error('Form tidak boleh kosong');
-                return redirect('/home');
-            }
+    	if($nama != null && $masuk != null && $uraian !=null){
+            $saldo=data::count();
+        	if ($saldo >=1){
+        		$find=data::orderby('created_at','desc')->get();
+        		$saldo=$find[0]['saldo'];
+        	}else{
+        		$saldo==$saldo;
+        	}
+        	$data=[
+        	'no_cek'=>$request->no_cek,
+        	'nama'=>$request->nama,
+        	'masuk'=>$masuk,
+        	'keluar'=>0,
+        	'uraian'=>$request->uraian,
+        	'saldo'=>$saldo+$request->masuk
+        	];
+        	$Create=data::create($data);
+            Alert::success('Data berhasil diinput');
+        	return redirect('/home');
         }else{
-            Alert::error('Nominal pemasukkan harus berupa angka','Error');
+            Alert::error('Form tidak boleh kosong');
             return redirect('/home');
         }
     }
@@ -88,35 +87,32 @@ class dataController extends Controller
         $nama=$request->nama;
         $k=$request->keluar;
         $keluar =str_replace(".","",$k);
+        $kel=str_replace(".","", $k);
+        $keluar=(int)$kel;
         $uraian=$request->uraian;
-        if (is_integer($keluar)) {
-            if ($nama != null && $keluar != null && $uraian!= null){
-            	$saldo=data::count();
-            	if ($saldo >=1){
-            		$find=data::orderby('created_at','desc')->get();
-            		$saldo=$find[0]['saldo'];
-            	}else{
-            		$saldo==$saldo;
-            	}
-            	
-            	$data=[
-            	'no_cek'=>$request->no_cek,
-            	'nama'=>$request->nama,
-            	'masuk'=>0,
-            	'keluar'=>$keluar,
-            	'uraian'=>$request->uraian,
-            	'saldo'=>$saldo-$request->keluar
-            	];
-            	$Create=data::create($data);
-                Alert::success('Data berhasil diinput');
-            	return redirect('/home');
-            }else{
-                Alert::error('Form tidak boleh kosong');
-                return redirect('/home');
-            }
+        if ($nama != null && $keluar != null && $uraian!= null){
+        	$saldo=data::count();
+        	if ($saldo >=1){
+        		$find=data::orderby('created_at','desc')->get();
+        		$saldo=$find[0]['saldo'];
+        	}else{
+        		$saldo==$saldo;
+        	}
+        	
+        	$data=[
+        	'no_cek'=>$request->no_cek,
+        	'nama'=>$request->nama,
+        	'masuk'=>0,
+        	'keluar'=>$keluar,
+        	'uraian'=>$request->uraian,
+        	'saldo'=>$saldo-$request->keluar
+        	];
+        	$Create=data::create($data);
+            Alert::success('Data berhasil diinput');
+        	return redirect('/home');
         }else{
-            Alert::error('Nominal pengeluaran harus berupa angka','Error');
-            return redirect('/home');   
+            Alert::error('Form tidak boleh kosong');
+            return redirect('/home');
         }
     }
 	public function data(){
