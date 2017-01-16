@@ -110,8 +110,8 @@
               <td>{{$d->no_cek}}</td>
               <td>{{$d->created_at}}</td>
               <td>{{$d->nama}} </td>
-              <td>{{$d->masuk}} </td>
-              <td>{{$d->keluar}} </td>
+              <td>{{number_format(($d->masuk),0,",",".")}} </td>
+              <td>{{number_format(($d->keluar),0,",",".")}} </td>
               <td style="width: 5%;">
                 <div class="btn-group pull-right">
                   <a href="{{url('detail',$d->id)}}" class="btn btn-default btn-sm"><span class="icon-file"></span></a>

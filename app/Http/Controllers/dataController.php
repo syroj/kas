@@ -52,59 +52,71 @@ class dataController extends Controller
     }
     public function in(Request $request){
         $nama=$request->nama;
-        $masuk=$request->masuk;
+        $m=$request->masuk;
+        $masuk=str_replace(".","", $m);
         $uraian=$request->uraian;
-    	if($nama != null && $masuk != null && $uraian !=null){
-            $saldo=data::count();
-        	if ($saldo >=1){
-        		$find=data::orderby('created_at','desc')->get();
-        		$saldo=$find[0]['saldo'];
-        	}else{
-        		$saldo==$saldo;
-        	}
-        	$data=[
-        	'no_cek'=>$request->no_cek,
-        	'nama'=>$request->nama,
-        	'masuk'=>$request->masuk,
-        	'keluar'=>0,
-        	'uraian'=>$request->uraian,
-        	'saldo'=>$saldo+$request->masuk
-        	];
-        	$Create=data::create($data);
-            Alert::success('Data berhasil diinput');
-        	return redirect('/home');
+        if (is_integer($masuk)) {
+        	if($nama != null && $masuk != null && $uraian !=null){
+                $saldo=data::count();
+            	if ($saldo >=1){
+            		$find=data::orderby('created_at','desc')->get();
+            		$saldo=$find[0]['saldo'];
+            	}else{
+            		$saldo==$saldo;
+            	}
+            	$data=[
+            	'no_cek'=>$request->no_cek,
+            	'nama'=>$request->nama,
+            	'masuk'=>$masuk,
+            	'keluar'=>0,
+            	'uraian'=>$request->uraian,
+            	'saldo'=>$saldo+$request->masuk
+            	];
+            	$Create=data::create($data);
+                Alert::success('Data berhasil diinput');
+            	return redirect('/home');
+            }else{
+                Alert::error('Form tidak boleh kosong');
+                return redirect('/home');
+            }
         }else{
-            Alert::error('Form tidak boleh kosong');
+            Alert::error('Nominal pemasukkan harus berupa angka','Error');
             return redirect('/home');
         }
     }
     public function out(Request $request){
         $nama=$request->nama;
-        $keluar=$request->keluar;
+        $k=$request->keluar;
+        $keluar =str_replace(".","",$k);
         $uraian=$request->uraian;
-        if ($nama != null && $keluar != null && $uraian!= null){
-        	$saldo=data::count();
-        	if ($saldo >=1){
-        		$find=data::orderby('created_at','desc')->get();
-        		$saldo=$find[0]['saldo'];
-        	}else{
-        		$saldo==$saldo;
-        	}
-        	
-        	$data=[
-        	'no_cek'=>$request->no_cek,
-        	'nama'=>$request->nama,
-        	'masuk'=>0,
-        	'keluar'=>$request->keluar,
-        	'uraian'=>$request->uraian,
-        	'saldo'=>$saldo-$request->keluar
-        	];
-        	$Create=data::create($data);
-            Alert::success('Data berhasil diinput');
-        	return redirect('/home');
+        if (is_integer($keluar)) {
+            if ($nama != null && $keluar != null && $uraian!= null){
+            	$saldo=data::count();
+            	if ($saldo >=1){
+            		$find=data::orderby('created_at','desc')->get();
+            		$saldo=$find[0]['saldo'];
+            	}else{
+            		$saldo==$saldo;
+            	}
+            	
+            	$data=[
+            	'no_cek'=>$request->no_cek,
+            	'nama'=>$request->nama,
+            	'masuk'=>0,
+            	'keluar'=>$keluar,
+            	'uraian'=>$request->uraian,
+            	'saldo'=>$saldo-$request->keluar
+            	];
+            	$Create=data::create($data);
+                Alert::success('Data berhasil diinput');
+            	return redirect('/home');
+            }else{
+                Alert::error('Form tidak boleh kosong');
+                return redirect('/home');
+            }
         }else{
-            Alert::error('Form tidak boleh kosong');
-            return redirect('/home');
+            Alert::error('Nominal pengeluaran harus berupa angka','Error');
+            return redirect('/home');   
         }
     }
 	public function data(){
@@ -129,7 +141,17 @@ class dataController extends Controller
     public function filter(Request $request){
         $from=$request->from;
         $to=$request->to;
-        $datas=data::whereBetween('created_at',[$from,$to])->paginate(10);
+        $tos=explode("-", $to);
+        $date=$tos[2]+1;
+        $sampai=$tos[0].'-'.$tos[1].'-'.$date;
+        if ($from ==null || $to == null ) {
+            Alert::warning('Input Tidak boleh kosong');
+            return redirect('/database');
+        }elseif ($from ==$to) {
+            Alert::warning('Tanggal pencarian tidak boleh sama');
+            return redirect('/database');
+        }
+        $datas=data::whereBetween('created_at',[$from,$sampai])->paginate(10);
         if (count($datas)==null) {
             Alert::warning('Data tidak ditemukan');
             return redirect('/database');
