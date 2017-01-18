@@ -27,4 +27,6 @@ Route::post('/keluar','dataController@out');
 Route::get('/search','dataController@search');
 Route::get('/detail/{id}','dataController@detail');
 Route::get('/filterDate','dataController@filter');
-
+Route::post('/addCategory','categoryController@add');
+Route::get('/kategori/{id}','dataController@byCategory');
+Route::get('filterCategory','dataController@filterCategory');

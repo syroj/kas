@@ -15,14 +15,21 @@ class Data extends Migration
     {
         Schema::create('data',function(Blueprint $data){
             $data->increments('id');
+            $data->integer('id_categories');
             $data->string('no_cek');
+            $data->string('tgl_transaksi');
             $data->string('nama');
             $data->integer('masuk');
             $data->integer('keluar');
             $data->integer('saldo');
             $data->string('uraian');
             $data->timestamps();
-
+        });
+        Schema::Create('categories',function(Blueprint $table){
+            $table->increments('id');
+            $table->string('kode_kategori');
+            $table->string('keterangan_kategori');
+            $table->timestamps();
         });
     }
 
@@ -33,6 +40,7 @@ class Data extends Migration
      */
     public function down()
     {
-        Schema::drop('datas');
+        Schema::drop('data');
+        Schema::drop('categories');
     }
 }

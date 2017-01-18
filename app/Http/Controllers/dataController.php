@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\data;
+use App\category;
 use Alert;
 
 class dataController extends Controller
@@ -41,13 +42,15 @@ class dataController extends Controller
     	$in=data::where('masuk','!=', 0)->count();
     	$out=data::where('keluar','!=', 0)->count();
     	$data= data::orderby('created_at','desc')->paginate(10);
+        $cats=category::all();
         return view('welcome',[
         	'datas' 	=> $data,
         	'in'		=> $in,
         	'out'		=> $out,
         	'saldo' 	=> $saldo,
         	'masuk'		=> $masuk,
-        	'keluar'	=> $keluar
+        	'keluar'	=> $keluar,
+            'categories'=> $cats,
         	]);
     }
     public function in(Request $request){
@@ -59,21 +62,25 @@ class dataController extends Controller
             Alert::error('Nominal pemasukan harus berupa angka');
         }
         $uraian=$request->uraian;
-    	if($nama != null && $masuk != null && $uraian !=null){
-            $saldo=data::count();
+        $kategori=$request->id_categories;
+        $tgl_transaksi=$request->tgl_transaksi;
+    	if($nama != null && $masuk != null && $uraian !=null && $kategori!=null && $tgl_transaksi !=null){
+            $saldo=data::where('id_categories',$kategori)->count();
         	if ($saldo >=1){
-        		$find=data::orderby('created_at','desc')->get();
+        		$find=data::where('id_categories',$kategori)->orderby('created_at','desc')->get();
         		$saldo=$find[0]['saldo'];
         	}else{
         		$saldo==$saldo;
         	}
         	$data=[
-        	'no_cek'=>$request->no_cek,
-        	'nama'=>$request->nama,
+            'id_categories'=>$kategori,
+            'no_cek'=>$request->no_cek,
+            'tgl_transaksi'=>$tgl_transaksi,
+            'nama'=>$request->nama,
         	'masuk'=>$masuk,
         	'keluar'=>0,
         	'uraian'=>$request->uraian,
-        	'saldo'=>$saldo+$request->masuk
+        	'saldo'=>$saldo+$masuk
         	];
         	$Create=data::create($data);
             Alert::success('Data berhasil diinput');
@@ -90,22 +97,27 @@ class dataController extends Controller
         $kel=str_replace(".","", $k);
         $keluar=(int)$kel;
         $uraian=$request->uraian;
-        if ($nama != null && $keluar != null && $uraian!= null){
-        	$saldo=data::count();
+        $kategori=$request->id_categories;
+        $tgl_transaksi=$request->tgl_transaksi;
+        
+        if ($nama != null && $kel != null && $uraian !=null && $kategori!=null && $tgl_transaksi !=null){
+        	$saldo=data::where('id_categories',$kategori)->count();
         	if ($saldo >=1){
-        		$find=data::orderby('created_at','desc')->get();
+        		$find=data::where('id_categories',$kategori)->orderby('created_at','desc')->get();
         		$saldo=$find[0]['saldo'];
         	}else{
         		$saldo==$saldo;
         	}
         	
         	$data=[
+            'id_categories'=>$kategori,
+            'tgl_transaksi'=>$tgl_transaksi,
         	'no_cek'=>$request->no_cek,
         	'nama'=>$request->nama,
         	'masuk'=>0,
         	'keluar'=>$keluar,
         	'uraian'=>$request->uraian,
-        	'saldo'=>$saldo-$request->keluar
+        	'saldo'=>$saldo-$keluar
         	];
         	$Create=data::create($data);
             Alert::success('Data berhasil diinput');
@@ -116,10 +128,12 @@ class dataController extends Controller
         }
     }
 	public function data(){
+        $categories=category::all();
 		$data=data::orderby('created_at','asc')->paginate(20);
-		return view('database',['datas'=>$data]);
+		return view('database',['datas'=>$data,'categories'=>$categories]);
 	}
     public function search(Request $request){
+        $categories=category::all();
         $s=$request->s;
         $datas=data::where('nama','like','%'.$request->s.'%')->orwhere('uraian','like','%'.$request->s.'%')->orwhere('no_cek','like','%'.$request->s.'%')->orwhere('created_at','like','%'.$request->s.'%')->paginate(20);
         if (count($datas)==null) {
@@ -127,7 +141,7 @@ class dataController extends Controller
             return redirect('/database');
 
         }else{
-            return view('database',compact('datas','s'));   
+            return view('database',compact('datas','s','categories'));   
         }
     }   
     public function detail($id){
@@ -137,9 +151,6 @@ class dataController extends Controller
     public function filter(Request $request){
         $from=$request->from;
         $to=$request->to;
-        $tos=explode("-", $to);
-        $date=$tos[2]+1;
-        $sampai=$tos[0].'-'.$tos[1].'-'.$date;
         if ($from ==null || $to == null ) {
             Alert::warning('Input Tidak boleh kosong');
             return redirect('/database');
@@ -147,6 +158,10 @@ class dataController extends Controller
             Alert::warning('Tanggal pencarian tidak boleh sama');
             return redirect('/database');
         }
+        $s=$request->s;
+        $tos=explode("-", $to);
+        $date=$tos[2]+1;
+        $sampai=$tos[0].'-'.$tos[1].'-'.$date;
         $datas=data::whereBetween('created_at',[$from,$sampai])->paginate(10);
         if (count($datas)==null) {
             Alert::warning('Data tidak ditemukan');
@@ -154,5 +169,16 @@ class dataController extends Controller
         }else{
             return view('filter',compact('datas','from','to'));
         }
+    }
+    public function byCategory($id){
+        $categories=category::all();
+        $data=data::where('id_categories',$id)->orderby('created_at','asc')->paginate(1);
+        return view('database',['datas'=>$data,'categories'=>$categories]);
+    }
+    public function filterCategory(Request $request){
+        $categories=category::all();
+        $s=$request->s;
+        $datas=data::where('id_categories',$s)->paginate(20);
+        return view('database',compact('datas','s','categories'));
     }
 }

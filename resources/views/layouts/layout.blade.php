@@ -12,6 +12,7 @@
 <link href="{{asset('/template/font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
 <link rel="stylesheet" href="{{asset('/template/css/jquery.gritter.css')}}" />
 <link rel="stylesheet" type="text/css" href="{{asset('/css/sweetalert.css')}}">
+<link rel="stylesheet" href="{{asset('/template/css/select2.css')}}" />
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
 
 </head>
