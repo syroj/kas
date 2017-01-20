@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\data;
 use App\category;
 use Alert;
+use Excel;
 
 class dataController extends Controller
 {
@@ -24,8 +25,7 @@ class dataController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index(){
     	$tanggal=date('Y-m-d');
     	$saldo=data::count();
     	if ($saldo >=1){
@@ -34,7 +34,7 @@ class dataController extends Controller
     	}else{
     		$saldo==$saldo;
     	}
-    	
+
     	$masuk =data::where('created_at','like','%'.$tanggal.'%')->sum('masuk');
     	$keluar =data::where('created_at','like','%'.$tanggal.'%')->sum('keluar');
     	
@@ -63,7 +63,9 @@ class dataController extends Controller
         }
         $uraian=$request->uraian;
         $kategori=$request->id_categories;
-        $tgl_transaksi=$request->tgl_transaksi;
+        $trans=$request->tgl_transaksi;
+        $tr=explode("-", $trans);
+        $tgl_transaksi=$tr[2].'-'.$tr[1].'-'.$tr[0];
     	if($nama != null && $masuk != null && $uraian !=null && $kategori!=null && $tgl_transaksi !=null){
             $saldo=data::where('id_categories',$kategori)->count();
         	if ($saldo >=1){
@@ -98,7 +100,9 @@ class dataController extends Controller
         $keluar=(int)$kel;
         $uraian=$request->uraian;
         $kategori=$request->id_categories;
-        $tgl_transaksi=$request->tgl_transaksi;
+        $trans=$request->tgl_transaksi;
+        $tr=explode("-", $trans);
+        $tgl_transaksi=$tr[2].'-'.$tr[1].'-'.$tr[0];
         
         if ($nama != null && $kel != null && $uraian !=null && $kategori!=null && $tgl_transaksi !=null){
         	$saldo=data::where('id_categories',$kategori)->count();
@@ -149,36 +153,89 @@ class dataController extends Controller
         return view('detail',['datas'=>$data]);
     }
     public function filter(Request $request){
+        $categories=category::all();
         $from=$request->from;
         $to=$request->to;
-        if ($from ==null || $to == null ) {
+        $s=$request->s;
+        $filter=$request->filter;
+        if ($from ==null || $to == null || $s== null) {
             Alert::warning('Input Tidak boleh kosong');
             return redirect('/database');
         }elseif ($from ==$to) {
             Alert::warning('Tanggal pencarian tidak boleh sama');
             return redirect('/database');
         }
-        $s=$request->s;
+
         $tos=explode("-", $to);
-        $date=$tos[2]+1;
-        $sampai=$tos[0].'-'.$tos[1].'-'.$date;
-        $datas=data::whereBetween('created_at',[$from,$sampai])->paginate(10);
-        if (count($datas)==null) {
-            Alert::warning('Data tidak ditemukan');
-            return redirect('/database');
-        }else{
-            return view('filter',compact('datas','from','to'));
+        $froms=explode("-", $from);
+        $dari=$froms[2].'-'.$froms[1].'-'.$froms[0];
+        $date=$tos[0]+1;
+        $sampai=$tos[2].'-'.$tos[1].'-'.$tos[0];
+        if ($filter =='created_at') {
+            $sampai=$tos[2].'-'.$tos[1].'-'.$date;
+            $datas=data::where('id_categories',$s)
+                        ->whereBetween('created_at',[$dari,$sampai])
+                        ->paginate(15);
+            return view('database',compact('datas','from','to','s','categories','filter'));
+        }elseif ($filter=='tgl_transaksi') {
+            $sampai=$tos[2].'-'.$tos[1].'-'.$tos[0];
+            $datas=data::where('id_categories',$s)
+                        ->whereBetween('tgl_transaksi',[$dari,$sampai])
+                        ->paginate(15);
+            return view('database',compact('datas','from','to','s','categories','filter'));
         }
     }
+
     public function byCategory($id){
         $categories=category::all();
-        $data=data::where('id_categories',$id)->orderby('created_at','asc')->paginate(1);
+        $data=data::where('id_categories',$id)
+                    ->orderby('created_at','asc')
+                    ->paginate(20);
         return view('database',['datas'=>$data,'categories'=>$categories]);
     }
-    public function filterCategory(Request $request){
+
+    public function export(Request $request){
         $categories=category::all();
+        $from=$request->from;
+        $to=$request->to;
         $s=$request->s;
-        $datas=data::where('id_categories',$s)->paginate(20);
-        return view('database',compact('datas','s','categories'));
+        $filter=$request->filter;
+        if ($from ==null || $to == null || $s== null) {
+            Alert::warning('Input Tidak boleh kosong');
+            return redirect('/database');
+        }elseif ($from ==$to) {
+            Alert::warning('Tanggal pencarian tidak boleh sama');
+            return redirect('/database');
+        }
+
+        $tos=explode("-", $to);
+        $froms=explode("-", $from);
+        $dari=$froms[2].'-'.$froms[1].'-'.$froms[0];
+        $date=$tos[0]+1;
+        $sampai=$tos[2].'-'.$tos[1].'-'.$tos[0];
+        if ($filter =='created_at') {
+            $sampai=$tos[2].'-'.$tos[1].'-'.$date;
+            $datas=data::where('id_categories',$s)
+                        ->whereBetween('created_at',[$dari,$sampai])
+                        ->get();
+            // return view('database',compact('datas','from','to','s','categories','filter'));
+            Excel::create('laporan', function($excel) use($datas) {
+                $excel->sheet('Sheet 1', function($sheet) use($datas) {
+                    $sheet->fromArray($datas, null,'A1',true);
+                });
+            })->export('xls');
+
+        }elseif ($filter=='tgl_transaksi') {
+            $sampai=$tos[2].'-'.$tos[1].'-'.$tos[0];
+            $datas=data::where('id_categories',$s)
+                        ->whereBetween('tgl_transaksi',[$dari,$sampai])
+                        ->get();
+            // return view('database',compact('datas','from','to','s','categories','filter'));
+            Excel::create('laporan', function($excel) use($datas) {
+                $excel->sheet('Sheet 1', function($sheet) use($datas) {
+                    $sheet->fromArray($datas, null,'A1',true);
+                });
+            })->export('xls');
+        }
     }
 }

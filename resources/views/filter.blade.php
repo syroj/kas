@@ -82,7 +82,7 @@
 				</table>
 				<center>
 		          <div class="pagination">
-		          	{{$datas->appends(compact('from','to'))->links()}}
+		          	{{$datas->appends(compact('from','to','s'))->links()}}
 		          </div>
 		        </center>
 			</div>

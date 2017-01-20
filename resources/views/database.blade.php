@@ -16,16 +16,16 @@
 				<h5>Data Transaksi</h5>
 			</div>
 			<div class="widget-content">
-				<div class="widget-box span6">
+				<div class="widget-box span12">
 					<div class="widget-title">
 						<span class="icon"><i class="icon-file"></i></span>
 						<h5>Database</h5>
 						<ul class="nav nav-tabs">
-							<li class="active"><a data-toggle="tab" href="#tgl_input"><i class="icon-calendar"></i>  INPUT</a></li>
-							<li><a data-toggle="tab" href="#tgl_transaksi"><i class="icon-calendar"></i>  TRANSAKSI</a></li>
-							<li><a data-toggle="tab" href="#laporan"><i class="icon-book"></i>  Laporan</a></li>
-							<li><a href="{{url('/home')}}"><i class="icon-home"></i> Kembali</a></li>
-							<li><a href="{{url('/database')}}"><i class="icon-refresh"></i> Refresh</a></li>
+							<li class="active"><a data-toggle="tab" href="#tgl_input"><i class="icon-calendar"></i>  Filter</a></li>
+              				<li><a data-toggle="tab" href="#kategori"><i class="icon-qrcode"></i> Kategori</a></li>
+              				<li><a data-toggle="tab" href="#Export"><i class="icon-file"></i> Export</a></li>
+							<li class="pull-right"><a href="{{url('/home')}}"><i class="icon-home"></i> Kembali</a></li>
+							<li class="pull-right"><a href="{{url('/database')}}"><i class="icon-refresh"></i> Refresh</a></li>
 
 						</ul>
 					</div>
@@ -33,17 +33,24 @@
 						<div id="tgl_input" class="tab-pane active">
 							<table class="table table-bordered">
 								<tr>
-									<td colspan="2"><span class="icon-calendar"></span> Cari Berdasarkan Tanggal INPUT</td>
+									<td colspan="2"><span class="icon-calendar"></span> Cari Data</td>
 								</tr>
 								<tr>
-								<form method="get" action="{{url('/filterDate')}}">
+								<form method="get" action="{{url('/filter')}}">
 									<td style="text-align: center;">Mulai</td>
-									<td><input type="text" name="from" class="span11"></td>
+									<td style="width: 15%;"><input type="text" name="from" class="span11"></td>
 									<td style="text-align: center;">Sampai</td>
-									<td><input type="text" name="to" class="span12"> </td>
-								</tr>
-								<tr>
-									<td colspan="3"><span class="icon-print"></span> Filter Kategori</td>
+									<td style="width: 15%;"><input type="text" name="to" class="span12"> </td>
+									<td>Berdarasarkan</td>
+									<td>
+										<select class="span12" name="filter">
+											<option value="tgl_transaksi">Tanggal Transaksi</option>
+											<option value="created_at">Tanggal Input</option>
+										</select>
+									</td>
+									<td>
+										Kategori
+									</td>
 									<td>
 										<select class="span12" name="s">
 										@foreach($categories as $c)
@@ -55,55 +62,50 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="4"><button type="submit" class="btn btn-default pull-right"> <span class="icon-search"></span> Filter</button></td>
+									<td colspan="8"><button type="submit" class="btn btn-default pull-right"> <span class="icon-search"></span> Filter</button></td>
 								</tr>
 								</form>
 							</table>					
 						</div>
-						<div id="tgl_transaksi" class="tab-pane">
+						<div class="tab-pane" id="kategori">
 							<table class="table table-bordered">
-								<tr >
-									<td colspan="2"><span class="icon-calendar"></span> Cari Berdasarkan Tanggal TRANSAKSI</td>
-								</tr>
 								<tr>
-								<form method="get" action="{{url('/filterDateTrans')}}">
-									<td style="text-align: center;">Mulai</td>
-									<td><input type="text" name="from" class="span11"></td>
-									<td style="text-align: center;">Sampai</td>
-									<td><input type="text" name="to" class="span12"> </td>
-								</tr>
-								<tr>
-									<td colspan="3"><span class="icon-print"></span> Filter Kategori</td>
-									<td>
-										<select class="span12" name="s">
-										@foreach($categories as $c)
-											<option value="{{$c->id}}">
-												{{$c->kode_kategori}}
-											</option>
-										@endforeach
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="4"><button type="submit" class="btn btn-default pull-right"> <span class="icon-search"></span> Filter</button></td>
-								</tr>
-								</form>
-							</table>					
+				                  <th>Kode</th>
+				                  <th>Keterangan</th>
+				                  <th>Tanggal</th>
+				                  <th>Tampilkan</th>
+				                </tr>
+				                @foreach($categories as $c)
+				                <tr>
+				                  <td>{{$c->kode_kategori}}</td>
+				                  <td>{{$c->keterangan_kategori}}</td>
+				                  <td>{{$c->created_at}}</td>
+				                  <td><a href="{{url('kategori',$c->id)}}" class="btn btn-success"><span class="icon-folder-open"></span></a></td>
+				                </tr>
+				                @endforeach
+                			</table>
 						</div>
-						<div id="laporan" class="tab-pane">
+						<div class="tab-pane" id="Export">
 							<table class="table table-bordered">
-								<tr >
-									<td colspan="2"><span class="icon-calendar"></span> Buat Laporan Dalam Excel</td>
+								<tr>
+									<td colspan="2"><span class="icon-calendar"></span> Export Data</td>
 								</tr>
 								<tr>
-								<form method="get" action="{{url('/filterDateTrans')}}">
+								<form method="get" action="{{url('/export')}}">
 									<td style="text-align: center;">Mulai</td>
-									<td><input type="text" name="from" class="span11"></td>
+									<td style="width: 15%;"><input type="text" name="from" class="span11"></td>
 									<td style="text-align: center;">Sampai</td>
-									<td><input type="text" name="to" class="span12"> </td>
-								</tr>
-								<tr>
-									<td colspan="3"><span class="icon-print"></span> Filter Kategori</td>
+									<td style="width: 15%;"><input type="text" name="to" class="span12"> </td>
+									<td>Berdarasarkan</td>
+									<td>
+										<select class="span12" name="filter">
+											<option value="tgl_transaksi">Tanggal Transaksi</option>
+											<option value="created_at">Tanggal Input</option>
+										</select>
+									</td>
+									<td>
+										Kategori
+									</td>
 									<td>
 										<select class="span12" name="s">
 										@foreach($categories as $c)
@@ -115,7 +117,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="4"><button type="submit" class="btn btn-default pull-right"> <span class="icon-search"></span> Filter</button></td>
+									<td colspan="8"><button type="submit" class="btn btn-default pull-right"> <span class="icon-arrow-down"></span> Excel</button></td>
 								</tr>
 								</form>
 							</table>					
@@ -155,14 +157,14 @@
 					@endforeach
 					@else
 					<tr>
-						<td colspan="8" style="text-align: center;">Belum Ada Data Tersedia</td>
+						<td colspan="9" style="text-align: center;">Belum Ada Data Tersedia</td>
 					</tr>
 					@endif
 					</tbody>
 				</table>
 				<center>
 		          <div class="pagination">
-		          {{$datas->appends(compact('s'))->links()}}
+		          {{$datas->appends(compact('from','to','filter','s'))->links()}}
 		          </div>
 		        </center>
 			</div>

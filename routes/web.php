@@ -1,16 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| This file is where you may define all of the routes that are handled
-| by your application. Just tell Laravel the URIs it should respond
-| to using a Closure or controller method. Build something great!
-|
-*/
-
 Route::get('/', function () {
 	if(Auth()->check()){
 		return redirect('/home');
@@ -26,7 +15,7 @@ Route::post('/in','dataController@in');
 Route::post('/keluar','dataController@out');
 Route::get('/search','dataController@search');
 Route::get('/detail/{id}','dataController@detail');
-Route::get('/filterDate','dataController@filter');
+Route::get('/filter','dataController@filter');
 Route::post('/addCategory','categoryController@add');
 Route::get('/kategori/{id}','dataController@byCategory');
-Route::get('filterCategory','dataController@filterCategory');
+Route::get('export','dataController@export');

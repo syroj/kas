@@ -14,4 +14,4 @@ Aplikasi ini dibuat untuk mencatat pemasukan dan pengeluaran keuangan. Aplikasi 
 	anda terbuka untuk berperan dalam pengembangan aplikasi ini.
 
 ## License
-	Aplikasi kas ini memiliki lisensi MIT
+	Aplikasi kas ini memiliki lisensi MIT &copy 2017
