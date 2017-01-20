@@ -12,7 +12,8 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Kas',
+    'name' => 'SimpleKas',
+    'version'=>'1.0',
 
     /*
     |--------------------------------------------------------------------------

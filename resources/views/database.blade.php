@@ -53,11 +53,15 @@
 									</td>
 									<td>
 										<select class="span12" name="s">
+										@if(count($categories)>0)
 										@foreach($categories as $c)
 											<option value="{{$c->id}}">
 												{{$c->kode_kategori}}
 											</option>
 										@endforeach
+										@else
+											<option>Belum Ada Kategori</option>
+										@endif
 										</select>
 									</td>
 								</tr>
@@ -108,11 +112,15 @@
 									</td>
 									<td>
 										<select class="span12" name="s">
+										@if(count($categories)>0)
 										@foreach($categories as $c)
 											<option value="{{$c->id}}">
 												{{$c->kode_kategori}}
 											</option>
 										@endforeach
+										@else
+											<option>Belum Ada Kategori</option>
+										@endif
 										</select>
 									</td>
 								</tr>

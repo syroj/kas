@@ -192,7 +192,7 @@
               @endforeach
               @else
               <tr>
-                <td colspan="6" style="text-align: center;">Belum Ada Data Tersedia</td>
+                <td colspan="8" style="text-align: center;">Belum Ada Data Tersedia</td>
               </tr>
               @endif
             </tbody>
