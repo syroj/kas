@@ -22,7 +22,7 @@
                 <table class="table table-bordered">
                   <tr>
                     <td><span class="icon-file"></span> No. Cek</td>
-                    <td><input type="text" name="no_cek" class="span10" value="in/{{date('y/m/d')}}/{{$in+1}}"></td>
+                    <td><input type="text" name="no_cek" class="span10" placeholder="No Cek"></td>
                   </tr>
                   <tr>
                     <td><span class="icon-arrow-down"></span> Tanggal Transaksi</td>
@@ -64,7 +64,7 @@
                 <table class="table table-bordered">
                   <tr>
                     <td><span class="icon-file"></span> No. Cek</td>
-                    <td><input type="text" name="no_cek" class="span10"  value="out/{{date('y/m/d')}}/{{$out+1}}"></td>
+                    <td><input type="text" name="no_cek" class="span10"  placeholder="No. Cek"></td>
                   </tr>
                   <tr>
                     <td><span class="icon-arrow-down"></span> Tanggal Transaksi</td>

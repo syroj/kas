@@ -39,14 +39,10 @@ class dataController extends Controller
     	$keluar =data::where('created_at','like','%'.$tanggal.'%')->sum('keluar');
     	
 
-    	$in=data::where('masuk','!=', 0)->count();
-    	$out=data::where('keluar','!=', 0)->count();
     	$data= data::orderby('created_at','desc')->paginate(10);
         $cats=category::all();
         return view('welcome',[
         	'datas' 	=> $data,
-        	'in'		=> $in,
-        	'out'		=> $out,
         	'saldo' 	=> $saldo,
         	'masuk'		=> $masuk,
         	'keluar'	=> $keluar,
@@ -218,7 +214,6 @@ class dataController extends Controller
             $datas=data::where('id_categories',$s)
                         ->whereBetween('created_at',[$dari,$sampai])
                         ->get();
-            // return view('database',compact('datas','from','to','s','categories','filter'));
             Excel::create('laporan', function($excel) use($datas) {
                 $excel->sheet('Sheet 1', function($sheet) use($datas) {
                     $sheet->fromArray($datas, null,'A1',true);
@@ -230,7 +225,6 @@ class dataController extends Controller
             $datas=data::where('id_categories',$s)
                         ->whereBetween('tgl_transaksi',[$dari,$sampai])
                         ->get();
-            // return view('database',compact('datas','from','to','s','categories','filter'));
             Excel::create('laporan', function($excel) use($datas) {
                 $excel->sheet('Sheet 1', function($sheet) use($datas) {
                     $sheet->fromArray($datas, null,'A1',true);
