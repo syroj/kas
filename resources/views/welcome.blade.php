@@ -26,7 +26,7 @@
                   </tr>
                   <tr>
                     <td><span class="icon-arrow-down"></span> Tanggal Transaksi</td>
-                    <td><input type="text" name="tgl_transaksi" class="span10" placeholder="Tanggal"></td>
+                    <td><input type="text" name="tgl_transaksi" class="span10" placeholder="Tanggal (dd-mm-yyyy)"></td>
                   </tr>
                   <tr>
                     <td><span class="icon-arrow-down"></span> Diterima dari</td>
@@ -68,7 +68,7 @@
                   </tr>
                   <tr>
                     <td><span class="icon-arrow-down"></span> Tanggal Transaksi</td>
-                    <td><input type="text" name="tgl_transaksi" class="span10" placeholder="Tanggal"></td>
+                    <td><input type="text" name="tgl_transaksi" class="span10" placeholder="Tanggal (dd-mm-yyyy)"></td>
                   </tr>
                   <tr>
                     <td><span class="icon-arrow-up"></span> Diberikan Kepada</td>
@@ -140,6 +140,13 @@
             <h5>Rincian Hari Ini ( {{date('D / d M Y')}} )</h5>
           </div>
           <div class="widget-content">
+            <select name="ktg" id="ktg" class="span12">
+              <option>Semua</option>
+              @foreach($categories as $c)
+              <option>{{$c->kode_kategori}}</option>
+              @endforeach
+            </select>
+            <br/>
             <table class="table table-bordered">
               <tr><td style="width: 30%"><i class="icon-arrow-down"> Pemasukan</i></td><td style="text-align: right;">Rp. {{number_format($masuk,0,",",".")}}</td></tr>
               <tr><td><i class="icon-arrow-up"> Pengeluaran</i></td><td style="text-align: right;">Rp. {{number_format($keluar,0,",",".")}}</td></tr>

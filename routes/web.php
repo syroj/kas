@@ -19,3 +19,5 @@ Route::get('/filter','dataController@filter');
 Route::post('/addCategory','categoryController@add');
 Route::get('/kategori/{id}','dataController@byCategory');
 Route::get('export','dataController@export');
+Route::get('clear-db','dataController@truncate');
+Route::get('/kwitansi/{id}','dataController@kwitansi');

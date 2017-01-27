@@ -25,6 +25,7 @@
               				<li><a data-toggle="tab" href="#kategori"><i class="icon-qrcode"></i> Kategori</a></li>
               				<li><a data-toggle="tab" href="#Export"><i class="icon-file"></i> Export</a></li>
 							<li class="pull-right"><a href="{{url('/home')}}"><i class="icon-home"></i> Kembali</a></li>
+							<li class="pull-right"><a href="{{url('/clear-db')}}" id="truncate">Clear Database</a></li>
 							<li class="pull-right"><a href="{{url('/database')}}"><i class="icon-refresh"></i> Refresh</a></li>
 
 						</ul>
@@ -38,9 +39,9 @@
 								<tr>
 								<form method="get" action="{{url('/filter')}}">
 									<td style="text-align: center;">Mulai</td>
-									<td style="width: 15%;"><input type="text" name="from" class="span11"></td>
+									<td style="width: 15%;"><input type="text" name="from" class="span11" placeholder="(dd-mm-yyyy)"></td>
 									<td style="text-align: center;">Sampai</td>
-									<td style="width: 15%;"><input type="text" name="to" class="span12"> </td>
+									<td style="width: 15%;"><input type="text" name="to" class="span12" placeholder="(dd-mm-yyyy)"> </td>
 									<td>Berdarasarkan</td>
 									<td>
 										<select class="span12" name="filter">
@@ -97,9 +98,9 @@
 								<tr>
 								<form method="get" action="{{url('/export')}}">
 									<td style="text-align: center;">Mulai</td>
-									<td style="width: 15%;"><input type="text" name="from" class="span11"></td>
+									<td style="width: 15%;"><input type="text" name="from" class="span11" placeholder="(dd-mm-yyyy)"></td>
 									<td style="text-align: center;">Sampai</td>
-									<td style="width: 15%;"><input type="text" name="to" class="span12"> </td>
+									<td style="width: 15%;"><input type="text" name="to" class="span12" placeholder="(dd-mm-yyyy)"> </td>
 									<td>Berdarasarkan</td>
 									<td>
 										<select class="span12" name="filter">

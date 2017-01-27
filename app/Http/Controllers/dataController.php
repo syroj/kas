@@ -19,12 +19,6 @@ class dataController extends Controller
     {
         $this->middleware('auth');
     }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(){
     	$tanggal=date('Y-m-d');
     	$saldo=data::count();
@@ -231,5 +225,97 @@ class dataController extends Controller
                 });
             })->export('xls');
         }
+    }
+
+    public function truncate(){
+        data::truncate();
+        return redirect('/database');
+    }
+    
+    public function kwitansi($id){
+        $data=data::where('id',$id)->first();
+        $masuk=$data->masuk;
+        $keluar=$data->keluar;
+        if ($masuk != null) {
+            $angka=$masuk;
+        }else{
+            $angka=$keluar;
+        }
+        function terbilang($angka){
+        $satuan=['','satu','dua','tiga','empat','lima','enam','tujuh','delapan','sembilan','sepuluh','sebelas'];
+        switch ($angka) {
+                case ($angka < 12):
+                    return "" . $satuan[$angka];
+                    break;
+                case ($angka < 20):
+                    return terbilang($angka - 10) . " belas";
+                    break;
+                case ($angka < 100):
+                    return terbilang($angka / 10). " puluh " . terbilang($angka % 10);
+                    break;
+                case ($angka < 200):
+                    return " seratus " . terbilang($angka - 100);
+                    break;
+                case ($angka < 1000):
+                    return terbilang($angka / 100). " ratus ". terbilang($angka % 100);
+                    break;
+                case ($angka < 2000):
+                    return " seribu ". terbilang($angka - 1000);
+                    break;
+                case ($angka < 1000000):
+                    return terbilang($angka / 1000). " ribu ". terbilang($angka % 1000);
+                    break;
+                case ($angka < 1000000000):
+                    return terbilang($angka / 1000000). " juta ". terbilang($angka % 1000000);
+                    break;
+                case ($angka < 1000000000000):
+                    return terbilang($angka / 1000000000). " milyar ".terbilang($angka % 1000000000);
+                    break;
+                case($angka < 1000000000000):
+                    return terbilang($angka / 1000000000000). " trilyun ".terbilang($angka % 1000000000000);
+                    break;
+            }
+        }      
+        Excel::create('kwitansi', function($excel)use($data,$angka){
+            $excel->sheet('kwitansi',function($sheet)use($data,$angka){
+                $sheet->cell('B1', function($cell)use($data,$angka){
+                    $cell->setValue('No Cek');
+                });
+                $sheet->cell('B2', function($cell)use($data,$angka){
+                    $cell->setValue('Diterima dari');
+                });
+                $sheet->cell('B3', function($cell)use($data,$angka){
+                    $cell->setValue('Banyaknya');
+                });
+                $sheet->cell('B4', function($cell)use($data,$angka){
+                    $cell->setValue('Untuk Pembayaran');
+                });
+                
+                $sheet->cell('B5',function($cell) use($data,$angka){
+                    $cell->setValue('Terbilang');
+                });
+                $sheet->cell('C1', function($cell)use($data,$angka){
+                    $cell->setValue($data->no_cek);
+                });
+                $sheet->cell('C2', function($cell)use($data,$angka){
+                    $cell->setValue($data->nama);
+                });
+                $sheet->cell('C3', function($cell)use($data,$angka){
+                    $cell->setValue(number_format(($angka),0,",","."));
+                });
+                $sheet->cell('C4', function($cell)use($data,$angka){
+                    $cell->setValue($data->uraian);
+                });
+                $sheet->cell('C5',function($cell)use($data,$angka){
+                    $cell->setValue(ucwords(terbilang($angka)). ' Rupiah');
+                });
+                $sheet->cell('C7',function($cell){
+                    $cell->setValue(date('d-M-Y'));
+                });
+                $sheet->cell('C12',function($cell){
+                    $cell->setValue(Auth()->user()->name);
+                });
+            });
+        })->export('xls');
     }
 }

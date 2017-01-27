@@ -48,7 +48,7 @@
 						</tr>
 						<tr>
 							<td colspan="3">
-							<a href="#" class="btn btn-default pull-right"><span class="icon-print"></span> Cetak</a>
+							<a href="{{url('/kwitansi',$data->id)}}" class="btn btn-default pull-right"><span class="icon-print"></span> Cetak</a>
 
 							<a href="{{('/')}}" class="btn btn-primary pull-right"><span class="icon-arrow-left"></span> Kembali</a>
 							</td>

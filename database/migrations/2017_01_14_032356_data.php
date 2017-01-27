@@ -19,10 +19,10 @@ class Data extends Migration
             $data->string('no_cek');
             $data->string('tgl_transaksi');
             $data->string('nama');
-            $data->integer('masuk');
-            $data->integer('keluar');
-            $data->integer('saldo');
-            $data->string('uraian');
+            $data->string('masuk');
+            $data->string('keluar');
+            $data->string('saldo');
+            $data->text('uraian');
             $data->timestamps();
         });
         Schema::Create('categories',function(Blueprint $table){

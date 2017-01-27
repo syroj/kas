@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Aplikasi Kas</title>
+    <title>{{app.name}}</title>
 
     <!-- Styles -->
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">

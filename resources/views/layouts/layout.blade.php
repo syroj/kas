@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Catatan Keuangan</title>
+<title>{{config('app.name')}}</title>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -128,6 +128,24 @@
         },
       function(){
         $form.submit()
+      })
+    })
+    $(document.body).on('click','#truncate',function(event){
+      event.preventDefault()
+      var $el = $(this)
+      var text = $el.data('confirm-message') ? $el.data('confirm-message') : 'Data transaksi pada database akan terhapus SEMUA'
+      swal({
+        title: 'Anda yakin?',
+        text: text,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Iya, lanjutkan!',
+        cancelButtonText: 'Batal',
+        closeOnConfirm: true
+        },
+      function(){
+        window.location.replace("/clear-db");
       })
     })
   })
