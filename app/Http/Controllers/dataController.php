@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\data;
 use App\category;
+use App\client;
+use App\jurnal_masuk;
+use App\jurnal_keluar;
 use Alert;
 use Excel;
 
@@ -31,7 +34,7 @@ class dataController extends Controller
 
     	$masuk =data::where('created_at','like','%'.$tanggal.'%')->sum('masuk');
     	$keluar =data::where('created_at','like','%'.$tanggal.'%')->sum('keluar');
-    	
+    	$clients=client::all();
 
     	$data= data::orderby('created_at','desc')->paginate(10);
         $cats=category::all();
@@ -41,6 +44,7 @@ class dataController extends Controller
         	'masuk'		=> $masuk,
         	'keluar'	=> $keluar,
             'categories'=> $cats,
+            'clients'   => $clients
         	]);
     }
     public function in(Request $request){

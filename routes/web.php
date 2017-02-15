@@ -21,3 +21,8 @@ Route::get('/kategori/{id}','dataController@byCategory');
 Route::get('export','dataController@export');
 Route::get('clear-db','dataController@truncate');
 Route::get('/kwitansi/{id}','dataController@kwitansi');
+
+// versi 2.0
+Route::post('/jurnal_masuk','jurnalController@jurnal_masuk');
+Route::post('/jurnal_keluar','jurnalController@jurnal_keluar');
+Route::post('/addclient','jurnalController@addclient');
